@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>《置身钉内》互动导读｜钉钉 ONE 项目与组织复盘</title>
+  <style>
+    :root{
+      --bg:#07131f;
+      --panel:#0d1b2a;
+      --panel2:#10243a;
+      --card:#12263b;
+      --muted:#89a1b8;
+      --text:#eef6ff;
+      --sub:#c7d7e8;
+      --blue:#2b8cff;
+      --cyan:#3de7ff;
+      --green:#35d38a;
+      --orange:#ffb86b;
+      --red:#ff6b7a;
+      --line:rgba(255,255,255,.12);
+      --shadow:0 24px 80px rgba(0,0,0,.35);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(43,140,255,.20), transparent 30%),
+        radial-gradient(circle at 85% 10%, rgba(61,231,255,.12), transparent 28%),
+        linear-gradient(180deg,#06111d 0%,#07131f 48%,#09111a 100%);
+      color:var(--text);
+      line-height:1.65;
+    }
+    a{color:var(--cyan);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .app{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+    aside{
+      position:sticky;top:0;height:100vh;overflow:auto;padding:28px 22px;border-right:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(6,17,29,.96),rgba(8,22,36,.88));backdrop-filter:blur(20px)
+    }
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:28px}
+    .logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--blue),var(--cyan));box-shadow:0 0 40px rgba(43,140,255,.45)}
+    .brand h1{font-size:16px;line-height:1.25;margin:0;letter-spacing:.3px}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .searchBox{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:18px}
+    .searchBox input{width:100%;border:0;outline:0;background:transparent;color:var(--text);font-size:14px;padding:8px 4px}
+    .searchActions{display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--muted);font-size:12px}
+    .searchActions button,.chip,.nav a,.topTag{
+      border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--sub);border-radius:999px;padding:6px 10px;cursor:pointer;font-size:12px
+    }
+    .searchActions button:hover,.chip:hover,.topTag:hover{background:rgba(61,231,255,.12);border-color:rgba(61,231,255,.35)}
+    .nav{display:flex;flex-direction:column;gap:8px;margin:18px 0 22px}
+    .nav a{border-radius:12px;padding:9px 11px;text-align:left}
+    .legend{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+    .legend div{display:flex;align-items:center;gap:8px;margin:8px 0}
+    .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+    main{padding:38px clamp(24px,5vw,72px) 80px;max-width:1380px}
+    .hero{min-height:420px;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:stretch;margin-bottom:32px}
+    .heroCard,.panel,.card,.timeline,.tocBox{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border-radius:var(--radius);box-shadow:var(--shadow)}
+    .heroCard{padding:36px;position:relative;overflow:hidden}
+    .heroCard:after{content:"";position:absolute;right:-120px;top:-120px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(61,231,255,.25),transparent 68%)}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(61,231,255,.28);background:rgba(61,231,255,.08);color:#bff6ff;border-radius:999px;padding:6px 12px;font-size:12px;margin-bottom:20px}
+    h2{font-size:44px;line-height:1.1;margin:0 0 16px;letter-spacing:-1.5px}
+    .lead{font-size:18px;color:var(--sub);max-width:780px;margin:0 0 24px}
+    .warning{border-left:4px solid var(--orange);background:rgba(255,184,107,.08);padding:14px 16px;border-radius:12px;color:#ffe5c7;margin-top:20px}
+    .heroStats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:24px}
+    .stat{padding:18px;border-radius:16px;background:rgba(0,0,0,.18);border:1px solid var(--line)}
+    .stat b{display:block;font-size:30px;line-height:1;color:var(--cyan);margin-bottom:8px}
+    .stat span{font-size:13px;color:var(--muted)}
+    .tagbar{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 30px}
+    .topTag.active{background:rgba(43,140,255,.22);border-color:rgba(43,140,255,.65);color:#fff}
+    section{scroll-margin-top:22px;margin:30px 0}
+    .sectionTitle{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 16px}
+    .sectionTitle h3{font-size:26px;margin:0;letter-spacing:-.5px}
+    .sectionTitle p{margin:0;color:var(--muted);font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .card{padding:20px;min-height:160px}
+    .card h4{margin:0 0 10px;font-size:18px;color:#fff}
+    .card p{margin:0;color:var(--sub);font-size:14px}
+    .pill{display:inline-block;font-size:11px;color:#dcecff;background:rgba(43,140,255,.16);border:1px solid rgba(43,140,255,.34);padding:3px 8px;border-radius:999px;margin:0 6px 8px 0}
+    .pill.fact{background:rgba(53,211,138,.14);border-color:rgba(53,211,138,.35)}
+    .pill.syn{background:rgba(43,140,255,.14);border-color:rgba(43,140,255,.35)}
+    .pill.hyp{background:rgba(255,184,107,.12);border-color:rgba(255,184,107,.35)}
+    .timeline{padding:24px}
+    .trow{display:grid;grid-template-columns:150px 1fr;gap:18px;border-left:1px solid rgba(61,231,255,.25);padding:0 0 22px 22px;position:relative}
+    .trow:before{content:"";position:absolute;left:-6px;top:3px;width:11px;height:11px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px rgba(61,231,255,.7)}
+    .trow:last-child{padding-bottom:0}
+    .time{font-weight:700;color:#d8faff}
+    .trow p{margin:0;color:var(--sub)}
+    .tocBox{padding:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .tocItem{border:1px solid var(--line);background:rgba(0,0,0,.16);border-radius:16px;padding:16px;min-height:130px}
+    .tocItem h4{margin:0 0 8px;color:#fff;font-size:16px}
+    .tocItem p{margin:0;color:var(--sub);font-size:13px}
+    .matrix{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    .matrix .card{min-height:220px}
+    .quoteLike{font-size:18px;color:#fff;border-left:4px solid var(--cyan);padding:14px 18px;background:rgba(61,231,255,.07);border-radius:12px;margin:12px 0}
+    .sourceList{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .sourceItem{padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.16)}
+    .sourceItem b{display:block;margin-bottom:6px}
+    .sourceItem span{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+    mark{background:#ffe36d;color:#06111d;border-radius:4px;padding:0 2px}
+    mark.current{background:#3de7ff;color:#06111d;box-shadow:0 0 0 3px rgba(61,231,255,.18)}
+    .hidden{display:none!important}
+    .footer{margin-top:50px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:20px}
+    table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:16px;border:1px solid var(--line)}
+    th,td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:14px}
+    th{background:rgba(43,140,255,.16);color:#fff}
+    td{background:rgba(255,255,255,.035);color:var(--sub)}
+    tr:last-child td{border-bottom:0}
+    @media(max-width:980px){
+      .app{grid-template-columns:1fr}
+      aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+      main{padding:24px 16px 60px}
+      .hero{grid-template-columns:1fr}.grid,.grid2,.matrix,.sourceList{grid-template-columns:1fr}.tocBox{grid-template-columns:1fr 1fr}.trow{grid-template-columns:1fr}h2{font-size:34px}
+    }
+    @media(max-width:560px){.tocBox{grid-template-columns:1fr}.heroStats{grid-template-columns:1fr}}
+
+    /* Deployment-readiness patch: pure anchor back-to-top + print/PDF support */
+    #pageTop{position:absolute;top:0;left:0;width:1px;height:1px;overflow:hidden}
+    .top-btn{
+      position:fixed;right:18px;bottom:18px;z-index:1200;
+      display:inline-flex;align-items:center;justify-content:center;min-height:40px;
+      border:1px solid rgba(61,231,255,.35);background:rgba(6,17,29,.86);
+      color:#d8faff;border-radius:999px;padding:8px 12px;box-shadow:0 12px 36px rgba(0,0,0,.28);
+      backdrop-filter:blur(14px);touch-action:manipulation;font-size:13px
+    }
+    .top-btn:hover{background:rgba(61,231,255,.14);text-decoration:none}
+    @media(max-width:540px){.top-btn{right:14px;bottom:calc(14px + env(safe-area-inset-bottom));font-size:12px}}
+    @media print{
+      @page{size:A4;margin:10mm}
+      html{scroll-behavior:auto}
+      body{background:#fff!important;color:#111!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .app{display:block;min-height:auto}
+      aside,.top-btn,.searchBox,.tagbar,.nav,.legend{display:none!important}
+      main{max-width:none;padding:0!important}
+      .hero{min-height:auto;display:block;margin-bottom:18px}
+      .heroCard,.panel,.card,.timeline,.tocBox,.sourceItem,.stat{box-shadow:none!important;break-inside:avoid;page-break-inside:avoid}
+      section{break-inside:auto;page-break-inside:auto;margin:16px 0}
+      .grid,.grid2,.matrix,.sourceList,.tocBox,.heroStats{display:block}
+      .card,.sourceItem,.tocItem,.stat{margin:0 0 10px}
+      table{break-inside:auto;page-break-inside:auto}
+      tr{break-inside:avoid;page-break-inside:avoid}
+      a{color:inherit;text-decoration:none}
+      mark{background:transparent;color:inherit;padding:0}
+    }
+
+  </style>
+</head>
+<body>
+<div id="pageTop" aria-hidden="true"></div>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="logo"></div>
+      <div><h1>《置身钉内》互动导读</h1><p>ONE 项目 / AI 办公 / 组织复盘</p></div>
+    </div>
+    <div class="searchBox">
+      <input id="searchInput" placeholder="搜索本页：ONE、无招、敏捷、用户、内卷..." />
+      <div class="searchActions">
+        <button id="prevBtn">上一个</button><button id="nextBtn">下一个</button><span id="count">0 项</span>
+      </div>
+    </div>
+    <div class="nav">
+      <a href="#overview">事件概览</a>
+      <a href="#timeline">时间线</a>
+      <a href="#toc">八卷导读</a>
+      <a href="#diagnosis">核心诊断</a>
+      <a href="#one">ONE 产品拆解</a>
+      <a href="#org">组织与文化问题</a>
+      <a href="#lessons">AI 办公启示</a>
+      <a href="#sources">全文入口与来源</a>
+    </div>
+    <div class="legend">
+      <div><span class="dot" style="background:var(--green)"></span>Fact：公开报道可核验</div>
+      <div><span class="dot" style="background:var(--blue)"></span>Synthesis：基于多源归纳</div>
+      <div><span class="dot" style="background:var(--orange)"></span>Hypothesis：待验证判断</div>
+    </div>
+  </aside>
+
+  <main id="contentRoot">
+    <div class="hero" id="overview">
+      <div class="heroCard searchable">
+        <div class="eyebrow">公开报道核验版｜不复制受版权保护全文</div>
+        <h2>《置身钉内》：不只是离职长文，而是一份 AI 办公产品与组织机制的反面案例</h2>
+        <p class="lead">本文页将公开报道中的关键信息整理为可检索、可跳转、可复盘的互动导读。它覆盖：事件来龙去脉、ONE 项目定位、八卷内容索引、产品失败机制、组织失序问题，以及对 AI 协同办公产品的启示。</p>
+        <div class="warning"><b>合规说明：</b>《置身钉内》被公开报道为约 7.1–7.5 万字/105 页长文。由于原文及转载内容受版权保护，本 HTML 不嵌入全文；下方提供公开报道与转载入口，并对内容进行摘要、结构化导读和分析。</div>
+      </div>
+      <div class="heroStats searchable">
+        <div class="stat"><b>7.1–7.5万</b><span>公开报道口径中的全文字数区间</span></div>
+        <div class="stat"><b>105页</b><span>虎嗅转载报道提到的长文页数</span></div>
+        <div class="stat"><b>8卷</b><span>发心、定位、设计、用户、敏捷、秩序、军争、长期</span></div>
+        <div class="stat"><b>ONE</b><span>钉钉面向 AI 时代的工作信息流/新首页尝试</span></div>
+      </div>
+    </div>
+
+    <div class="tagbar" id="tagbar">
+      <button class="topTag active" data-filter="all">全部</button>
+      <button class="topTag" data-filter="product">产品定位</button>
+      <button class="topTag" data-filter="ai">AI 办公</button>
+      <button class="topTag" data-filter="org">组织管理</button>
+      <button class="topTag" data-filter="user">用户体验</button>
+      <button class="topTag" data-filter="response">官方/高管回应</button>
+      <button class="topTag" data-filter="lesson">启示</button>
+    </div>
+
+    <section id="facts">
+      <div class="sectionTitle"><h3>一、基础事实卡</h3><p>按证据等级标注，便于快速判断</p></div>
+      <div class="grid">
+        <article class="card filterable searchable" data-tags="product ai"><span class="pill fact">Fact</span><h4>作者与身份</h4><p>公开报道将作者指向钉钉 AI 工具 ONE 项目的核心产品经理，常见署名包括“幽素/滕雅辛”。她以一线亲历者视角复盘 ONE 项目。</p></article>
+        <article class="card filterable searchable" data-tags="product ai"><span class="pill fact">Fact</span><h4>文章规模与结构</h4><p>多家报道提到文章为 7.1–7.5 万字、105 页左右，并采用八章/八卷结构：发心、定位、设计、用户、敏捷、秩序、军争、长期。</p></article>
+        <article class="card filterable searchable" data-tags="ai product"><span class="pill fact">Fact</span><h4>ONE 的产品定义</h4><p>ONE 被描述为面向 AI 时代的 Agent 驱动工作信息流，试图把消息、日程、会议、审批、文档等分散信息重组为主动推送的工作流。</p></article>
+        <article class="card filterable searchable" data-tags="user product"><span class="pill fact">Fact</span><h4>初期数据与后续问题</h4><p>公开解读称 ONE 发布初期 DAU 曾冲高，但很快面临留存下滑、用户抵触、定位摇摆与项目边缘化等问题。</p></article>
+        <article class="card filterable searchable" data-tags="response org"><span class="pill fact">Fact</span><h4>马锐拉《置身钉外》</h4><p>钉钉原副总裁、AI 产品负责人马锐拉在 6 月 8 日发布回应文章，确认自己 5 月 15 日已办完离职手续，并表达对高压、反复汇报和无效循环的理解。</p></article>
+        <article class="card filterable searchable" data-tags="response org"><span class="pill fact">Fact</span><h4>阿里合伙人委员会回应</h4><p>公开报道显示，阿里巴巴合伙人委员会 6 月 10 日在内网发文，批评帖子中提到的钉钉团队管理方式，称其不是阿里文化倡导的方向。</p></article>
+      </div>
+    </section>
+
+    <section id="timeline">
+      <div class="sectionTitle"><h3>二、事件时间线</h3><p>从 ONE 立项到舆论发酵</p></div>
+      <div class="timeline searchable">
+        <div class="trow"><div class="time">2025-04-01</div><p>公开报道称，钉钉创始人陈航（无招）回归，ONE 项目随后成为钉钉 AI 战略中的核心尝试。</p></div>
+        <div class="trow"><div class="time">2025-06</div><p>作者加入钉钉并进入 ONE 项目，据报道自述为后期加入但持续参与核心决策与项目收缩过程的产品经理。</p></div>
+        <div class="trow"><div class="time">2025-08-25</div><p>ONE 在钉钉 8.0 / AI 钉钉发布会上亮相，被定位为 AI 时代的新工作入口之一。</p></div>
+        <div class="trow"><div class="time">2026-06-04</div><p>《置身钉内》在阿里内网发布，随后外溢传播，引发科技圈和职场群体讨论。</p></div>
+        <div class="trow"><div class="time">2026-06-08</div><p>原钉钉副总裁马锐拉发布《置身钉外》，确认离职并回应《置身钉内》引发的感受。</p></div>
+        <div class="trow"><div class="time">2026-06-10</div><p>阿里巴巴合伙人委员会内网发文回应，强调 AI 时代创新不应依赖高压和机械执行。</p></div>
+      </div>
+    </section>
+
+    <section id="toc">
+      <div class="sectionTitle"><h3>三、八卷导读</h3><p>不是全文复刻，而是结构化索引</p></div>
+      <div class="tocBox searchable">
+        <div class="tocItem filterable" data-tags="product ai"><h4>1. 发心</h4><p>讨论 ONE 的多重出发点：用户减负、钉钉换代、AI 工作流证明、商业化/集团目标。这是后续冲突的源头。</p></div>
+        <div class="tocItem filterable" data-tags="product"><h4>2. 定位</h4><p>核心问题是“先服务谁、解决什么场景、凭什么由钉钉做”。定位不清导致功能、节奏和团队目标难以统一。</p></div>
+        <div class="tocItem filterable" data-tags="product user"><h4>3. 设计</h4><p>以卡片化工作信息流为核心形态，但落地时受到历史产品基因、成本、业务导流和商业化诉求约束。</p></div>
+        <div class="tocItem filterable" data-tags="user org"><h4>4. 用户</h4><p>真实用户体感成为压力测试：如果 AI 工具让用户感到被监控、被公示、被加压，产品价值会被迅速抵消。</p></div>
+        <div class="tocItem filterable" data-tags="org product"><h4>5. 敏捷</h4><p>批评“发布会倒排工期”的伪敏捷：看似高速迭代，实则可能是持续放大错误方向。</p></div>
+        <div class="tocItem filterable" data-tags="org"><h4>6. 秩序</h4><p>聚焦权责、决策链、跨部门协作和多头管理。组织秩序失序会直接转嫁为产品体验割裂。</p></div>
+        <div class="tocItem filterable" data-tags="ai product"><h4>7. 军争</h4><p>将 AI 办公竞争视作战役：行业竞速、竞品对标和战略焦虑可能造成未充分验证就强行开战。</p></div>
+        <div class="tocItem filterable" data-tags="lesson ai"><h4>8. 长期</h4><p>回到长期主义：主动式 AI 工作流方向未必错误，但产品必须以用户价值、真实留存和组织健康为底线。</p></div>
+      </div>
+    </section>
+
+    <section id="diagnosis">
+      <div class="sectionTitle"><h3>四、核心诊断：三层问题叠加</h3><p>从产品失败到组织镜像</p></div>
+      <div class="matrix">
+        <article class="card filterable searchable" data-tags="product user"><span class="pill syn">Synthesis</span><h4>1. 产品层：入口野心大于场景闭环</h4><p>ONE 的宏大目标是重组工作信息入口，但用户真正买单的是明确减负、少遗漏、少切换、可完成任务。若“新首页”优先于“具体任务闭环”，产品容易变成信息聚合而非效率提升。</p></article>
+        <article class="card filterable searchable" data-tags="org"><span class="pill syn">Synthesis</span><h4>2. 组织层：执行强度掩盖决策质量</h4><p>大量加班、汇报、快速迭代并不自动等于有效创新。若战略假设、用户反馈和技术边界未被及时校正，高执行力只会让错误扩散更快。</p></article>
+        <article class="card filterable searchable" data-tags="ai lesson"><span class="pill hyp">Hypothesis</span><h4>3. 行业层：AI 办公不能强化控制感</h4><p>AI 协同办公的长期方向应是减少低价值协调成本，而不是把组织权力、已读未回、优先级排序、绩效压力进一步算法化。否则用户会把工具识别为管理系统的延伸。</p></article>
+      </div>
+    </section>
+
+    <section id="one">
+      <div class="sectionTitle"><h3>五、ONE 产品拆解</h3><p>“事找人”的价值与风险</p></div>
+      <div class="grid2">
+        <article class="card filterable searchable" data-tags="ai product user"><span class="pill fact">Fact</span><h4>原始价值主张</h4><p>将散落在消息、待办、会议、审批、文档中的信息重新组织，通过 AI 摘要、排序和卡片流推送，让关键事项主动浮现。其价值假设是降低用户查找、记忆和协调成本。</p></article>
+        <article class="card filterable searchable" data-tags="product user"><span class="pill syn">Synthesis</span><h4>用户价值断裂点</h4><p>如果卡片过多、优先级不可解释、来自上级的信息天然更强势，用户体感会从“减负”转为“被盯住”。这会破坏 AI 办公产品最重要的信任基础。</p></article>
+        <article class="card filterable searchable" data-tags="ai product"><span class="pill syn">Synthesis</span><h4>AI 办公的正确闭环</h4><p>较优路径不是“把所有信息都推给用户”，而是：识别任务 → 解释原因 → 给出建议动作 → 支持拒绝/延期/归档 → 可审计回写。否则 AI 只是制造新的信息流。</p></article>
+        <article class="card filterable searchable" data-tags="lesson ai"><span class="pill hyp">Hypothesis</span><h4>对企业软件的启示</h4><p>AI Agent 不应只是入口皮肤，而应进入可验证的业务流程闭环。企业客户愿意为“少犯错、少漏事、少协调、可追责”付费，不会长期为概念入口付费。</p></article>
+      </div>
+    </section>
+
+    <section id="org">
+      <div class="sectionTitle"><h3>六、组织与文化问题</h3><p>为什么它引发广泛职场共鸣</p></div>
+      <div class="grid">
+        <article class="card filterable searchable" data-tags="org response"><span class="pill fact">Fact</span><h4>高压与无效循环</h4><p>多家报道引用马锐拉回应，指出高压、频繁汇报、高速迭代但不见起色的循环，是他读完《置身钉内》后产生共鸣的重要原因。</p></article>
+        <article class="card filterable searchable" data-tags="org product"><span class="pill syn">Synthesis</span><h4>多头决策</h4><p>当产品、设计、业务线、商业化、管理者偏好同时争夺优先级，而缺乏清晰仲裁机制，最终会体现为需求变形、交互反复和团队消耗。</p></article>
+        <article class="card filterable searchable" data-tags="org user"><span class="pill syn">Synthesis</span><h4>技术放大组织权力</h4><p>已读、未读、优先级、卡片置顶、可视化进程等机制，本身是中性工具；但在等级组织中，可能强化管理者视角，削弱员工缓冲空间。</p></article>
+      </div>
+      <div class="quoteLike searchable">判断：这篇文章的传播力不只来自“钉钉出了问题”，而来自它把很多组织中隐性的压力机制，用一个具体 AI 产品项目具象化了。</div>
+    </section>
+
+    <section id="lessons">
+      <div class="sectionTitle"><h3>七、对 AI 办公产品与管理层的启示</h3><p>可用于产品复盘、组织管理和战略判断</p></div>
+      <table class="searchable">
+        <thead><tr><th>议题</th><th>错误做法</th><th>更稳妥做法</th></tr></thead>
+        <tbody>
+          <tr><td>AI 产品定位</td><td>先定义“新入口”和发布会叙事，再寻找用户场景。</td><td>先锁定单一高频痛点，验证节省时间、减少遗漏或降低协作成本。</td></tr>
+          <tr><td>Agent 工作流</td><td>把所有任务都汇聚成信息流，制造新的提醒负担。</td><td>让 Agent 完成“识别—解释—建议—执行—回写”闭环，并允许用户控制。</td></tr>
+          <tr><td>组织决策</td><td>用高压执行、频繁评审和倒排工期掩盖定位不清。</td><td>建立假设清单、验证指标、纠偏机制和明确 DRI。</td></tr>
+          <tr><td>管理工具伦理</td><td>把可视化、排序、已读未读变成管控颗粒度升级。</td><td>明确“不强化监控、不放大内卷、不剥夺缓冲空间”的产品底线。</td></tr>
+          <tr><td>长期竞争</td><td>为了跟上 AI 热潮，盲目复刻竞品能力。</td><td>基于自身数据、权限、组织连接和客户场景，形成不可替代的流程资产。</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="sources">
+      <div class="sectionTitle"><h3>八、全文入口与来源</h3><p>用于外部核验；转载完整性需自行判断</p></div>
+      <div class="sourceList searchable">
+        <div class="sourceItem"><b>搜狐转载：《阿里内网万言离职书〈置身钉内〉原文，已刷屏》</b><a href="https://www.sohu.com/a/1033234360_121124619" target="_blank" rel="noopener noreferrer">打开公开转载入口</a><span>标注为 OCR/转载整理，不保证全文准确性；适合作为查找原文结构的入口，不宜作为唯一事实源。</span></div>
+        <div class="sourceItem"><b>知乎转载：《钉钉内网7万字长文〈置身钉内〉》</b><a href="https://zhuanlan.zhihu.com/p/2047067667811537005/" target="_blank" rel="noopener noreferrer">打开转载入口</a><span>多为长图/OCR 转载，阅读体验和准确性可能受限。</span></div>
+        <div class="sourceItem"><b>虎嗅：105页长文复盘 AI 时代钉钉困局</b><a href="https://www.huxiu.com/article/4864992.html" target="_blank" rel="noopener noreferrer">打开解读文章</a><span>提供文章规模、八章结构、ONE 项目定位和产品脉络。</span></div>
+        <div class="sourceItem"><b>新京报：〈置身钉内〉“钉”出了职场人隐痛</b><a href="https://www.bjnews.com.cn/detail/1781089538168617.html" target="_blank" rel="noopener noreferrer">打开评论文章</a><span>重点分析职场文化、技术管控和用户体感问题。</span></div>
+        <div class="sourceItem"><b>东方财富/中新网：阿里发文回应</b><a href="https://wap.eastmoney.com/a/202606103766475437.html" target="_blank" rel="noopener noreferrer">打开回应报道</a><span>提供阿里合伙人委员会回应口径。</span></div>
+        <div class="sourceItem"><b>新浪科技/TechWeb：马锐拉《置身钉外》</b><a href="https://finance.sina.com.cn/tech/roll/2026-06-09/doc-iniaukpc1974557.shtml" target="_blank" rel="noopener noreferrer">打开报道</a><span>提供马锐拉确认离职和回应信息。</span></div>
+      </div>
+    </section>
+
+    <div class="footer searchable">生成说明：本页为公开报道基础上的互动摘要与导读，不构成对原文的全文转载。建议以作者原始发布、企业内网原帖及权威媒体报道为最终核验依据。</div>
+  </main>
+</div>
+<a class="top-btn" href="#pageTop" aria-label="回到页面顶部">↑ 顶部</a>
+<script>
+  const input = document.getElementById('searchInput');
+  const root = document.getElementById('contentRoot');
+  const count = document.getElementById('count');
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const blocks = [...document.querySelectorAll('.searchable')];
+  const originals = new Map(blocks.map(el => [el, el.innerHTML]));
+  let marks = [];
+  let current = -1;
+  function escapeRegExp(str){return str.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+  function clearHighlights(){blocks.forEach(el=>{el.innerHTML = originals.get(el)}); marks=[]; current=-1; count.textContent='0 项'}
+  function highlight(){
+    clearHighlights();
+    const q = input.value.trim();
+    if(!q) return;
+    const re = new RegExp(escapeRegExp(q),'gi');
+    blocks.forEach(el=>{
+      el.innerHTML = originals.get(el).replace(re, m => `<mark>${m}</mark>`);
+    });
+    marks = [...document.querySelectorAll('mark')];
+    count.textContent = `${marks.length} 项`;
+    if(marks.length){current=0; focusMark();}
+  }
+  function focusMark(){
+    marks.forEach(m=>m.classList.remove('current'));
+    if(!marks.length) return;
+    marks[current].classList.add('current');
+    marks[current].scrollIntoView({behavior:'smooth',block:'center'});
+    count.textContent = `${current+1}/${marks.length}`;
+  }
+  nextBtn.addEventListener('click',()=>{if(!marks.length)return;current=(current+1)%marks.length;focusMark()});
+  prevBtn.addEventListener('click',()=>{if(!marks.length)return;current=(current-1+marks.length)%marks.length;focusMark()});
+  let timer;
+  input.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(highlight,180)});
+
+  const tagBtns = [...document.querySelectorAll('.topTag')];
+  const items = [...document.querySelectorAll('.filterable')];
+  tagBtns.forEach(btn=>btn.addEventListener('click',()=>{
+    tagBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tag = btn.dataset.filter;
+    items.forEach(item=>{
+      item.classList.toggle('hidden', tag !== 'all' && !(item.dataset.tags || '').split(' ').includes(tag));
+    });
+  }));
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+{
+  "project_name": "dingtalk-zhishen-dingnei-interactive",
+  "title": "《置身钉内》互动导读｜钉钉 ONE 项目与组织复盘",
+  "generated_at_utc": "2026-06-12T18:49:34.379185+00:00",
+  "package_type": "standard_deployment_package",
+  "workflow_stage": "S4 Deployment Package Generated; S5 Publish Pending",
+  "entry_file": "index.html",
+  "deployment_target": "GitHub Pages",
+  "pages_source": "GitHub Actions workflow: .github/workflows/pages.yml",
+  "recommended_repo": "<OWNER>/dingtalk-zhishen-dingnei-interactive",
+  "visibility_default": "public",
+  "source_html": {
+    "uploaded_name": "dingtalk_zhishen_dingnei_interactive.html",
+    "original_sha256": "f37a1814ddb0f83315ed6d42abede50cf262358d673f813f654a26b604ae534f"
+  },
+  "content_boundary": "Interactive summary and analysis page based on user-confirmed HTML; does not embed protected full text; includes public source links and disclaimers.",
+  "human_approval_status": "treated_as_confirmed_by_user_request_for_deployment_package",
+  "audit_status": {
+    "html_audit": "Go for deployment package generation",
+    "release_audit": "pending_live_url",
+    "pdf_audit": "not_requested"
+  },
+  "required_files": [
+    "index.html",
+    "README.md",
+    "DEPLOYMENT.md",
+    "CODEX_PROMPT.md",
+    "MANIFEST.json",
+    ".nojekyll",
+    ".github/workflows/pages.yml",
+    "scripts/setup_pages_branch.sh",
+    "scripts/setup_pages_branch.ps1",
+    "scripts/generate_qr.py",
+    "scripts/export_pdf_playwright.js"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/pages.yml",
+      "size_bytes": 701,
+      "sha256": "5c4c44e56019b4ed8643b66bdf2aaa9cdadf163968aaf3008529dca7edeb6378"
+    },
+    {
+      "path": ".nojekyll",
+      "size_bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "CODEX_PROMPT.md",
+      "size_bytes": 3610,
+      "sha256": "06d1ae8016db315ab028545cd49d80bc97e5f7f6e8c6d57c57fdfebd4a0fd77a"
+    },
+    {
+      "path": "DEPLOYMENT.md",
+      "size_bytes": 2239,
+      "sha256": "121808e3931739e367e9b57e4998edb74ecb0cb7f00c0ff0c88c6dafbda92cf3"
+    },
+    {
+      "path": "HTML_AUDIT.md",
+      "size_bytes": 1735,
+      "sha256": "29c45a9e76f3372edb7009956863ffe98a3f65e61a888368a2be0e9fd971cfd0"
+    },
+    {
+      "path": "MANIFEST.json",
+      "size_bytes": 3665,
+      "sha256": "8f64d5fb17067aa99c5d3ff6d8017b1ca8e06be814dbba9ace492532d667509a"
+    },
+    {
+      "path": "PACKAGE_QA.md",
+      "size_bytes": 744,
+      "sha256": "ed6f60afe6c82b5d8835455b01c183a8201a60946a0f3f198578d284c1987e0f"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 1735,
+      "sha256": "3285de43ddc29007669a42ee1b5d13932c0f9b77489cba661ce6e5268888b371"
+    },
+    {
+      "path": "index.html",
+      "size_bytes": 29208,
+      "sha256": "2d1755cebb3bcf3c38e65373a3924ae2b987dd25bb755de2600181ec1dad9dc8"
+    },
+    {
+      "path": "scripts/export_pdf_playwright.js",
+      "size_bytes": 865,
+      "sha256": "6361af7fb303a3cf9d3edaff8ed4b1e229a10f609f67729abc63f9880514f7ef"
+    },
+    {
+      "path": "scripts/generate_qr.py",
+      "size_bytes": 681,
+      "sha256": "080040a922790671d4d2222d85538a5eddf8cb696ef108e2910809ddc5e0caa3"
+    },
+    {
+      "path": "scripts/setup_pages_branch.ps1",
+      "size_bytes": 737,
+      "sha256": "166320a03651a3ea259ac615bd27ca2c17fba98e0cd48a06380804ea6abb8ba3"
+    },
+    {
+      "path": "scripts/setup_pages_branch.sh",
+      "size_bytes": 624,
+      "sha256": "a72709a5209a351070b96a99e627c93d1a279daf672d6bf302e2d312e0b8315d"
+    }
+  ],
+  "file_count": 13,
+  "package_sha_note": "See zip file SHA-256 in final response or regenerate locally."
+}
